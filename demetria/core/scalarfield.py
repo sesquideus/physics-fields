@@ -84,7 +84,7 @@ class ScalarField(Field):
         norm = None
         cmap = None
         if colour is None:                                  # No colour
-            clr = np.zeros_like(u)
+            clr = np.zeros_like(x)   # not u: plot_3D takes x and y
         elif isinstance(colour, ScalarField):               # Colour by scalar field, evaluate automatically
             clr = colour(x, y)
             norm = kwargs.get('norm', mpl.colors.TwoSlopeNorm(0))
