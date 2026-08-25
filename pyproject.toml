@@ -9,7 +9,7 @@ packages = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.10"
+python = "^3.14"
 numpy = "*"
 scipy = "*"
 # Only the plot methods want it, and they import it themselves. demeteor depends on this package
