@@ -3,9 +3,6 @@ from typing import TypeAlias, Callable
 import numpy as np
 import numbers
 
-import matplotlib as mpl
-from matplotlib import pyplot as plt
-from matplotlib import colors
 from numpy.typing import ArrayLike
 
 from .field import Field
@@ -49,6 +46,11 @@ class ScalarField(Field):
             return __class__(lambda x, y: self.function(x, y) / other.function(x, y))
 
     def plot_image(self, x, y, *, file=None, limits=None, mask=None, colour=None, **kwargs):
+        # matplotlib is the `plots` extra, and demeteor now depends on this package: an
+        # import at module scope would put a plotting library -- and the backend switching
+        # below -- on the import path of a headless server. Only the plot methods need it.
+        from matplotlib import pyplot as plt
+
         fig, ax = plt.subplots(figsize=kwargs.get('figsize', (10, 10)))
         fig.tight_layout()
 
@@ -69,6 +71,12 @@ class ScalarField(Field):
             fig.savefig(file, dpi=100)
 
     def plot_3D(self, x, y, *, colour=None, file=None, limits=None, **kwargs):
+        # matplotlib is the `plots` extra, and demeteor now depends on this package: an
+        # import at module scope would put a plotting library -- and the backend switching
+        # below -- on the import path of a headless server. Only the plot methods need it.
+        import matplotlib as mpl
+        from matplotlib import pyplot as plt
+
         fig = plt.figure(figsize=kwargs.get('figsize', (10, 10)))
         ax = plt.axes(projection='3d')
         fig.tight_layout()
@@ -129,6 +137,12 @@ class SampledScalarField():
         return self * value
 
     def plot(self):
+        # matplotlib is the `plots` extra, and demeteor now depends on this package: an
+        # import at module scope would put a plotting library -- and the backend switching
+        # below -- on the import path of a headless server. Only the plot methods need it.
+        from matplotlib import pyplot as plt
+        from matplotlib import colors
+
         scale = self.z.shape[0]
         x = 1 + 1 / scale
         plt.imshow(self.z, extent=[-x, x, x, -x], cmap='bwr', norm=colors.TwoSlopeNorm(vcenter=0))

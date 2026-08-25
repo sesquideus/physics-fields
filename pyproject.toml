@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "demetria"
-version = "0.1.0"
+version = "0.2.0"
 description = "A minimalistic package for manipulating 2D scalar and vector fields."
 authors = ["Martin Odokienko <martin.balaz@trojsten.sk>"]
 readme = "README.md"
@@ -12,10 +12,17 @@ packages = [
 python = "^3.10"
 numpy = "*"
 scipy = "*"
-matplotlib = "*"
+# Only the plot methods want it, and they import it themselves. demeteor depends on this package
+# now, and a headless server that imports demeteor should not thereby acquire a plotting library --
+# nor have its matplotlib backend switched by a module it never calls.
+matplotlib = { version = "*", optional = true }
+
+[tool.poetry.extras]
+plots = ["matplotlib"]
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.4.3"
+matplotlib = "*"
 
 [build-system]
 requires = ["poetry-core"]

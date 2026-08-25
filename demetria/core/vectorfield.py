@@ -1,9 +1,7 @@
 import numpy as np
 import numbers
-import matplotlib as mpl
 import copy
 
-from matplotlib import pyplot as plt
 from typing import Callable, TypeAlias
 
 from numpy.typing import ArrayLike, NDArray
@@ -148,6 +146,11 @@ class VectorField(Field):
 
     # FixMe: Remove this
     def plot(self, x, y, *, file=None, limits=None, mask=None, colour=None, **kwargs):
+        # matplotlib is the `plots` extra, and demeteor now depends on this package: an
+        # import at module scope would put a plotting library -- and the backend switching
+        # below -- on the import path of a headless server. Only the plot methods need it.
+        from matplotlib import pyplot as plt
+
         print(f"Plotting to {file}")
         fig, ax = plt.subplots(figsize=kwargs.get('figsize', (10, 10)))
         fig.tight_layout()
@@ -170,6 +173,11 @@ class VectorField(Field):
 
     # FixMe: Remove this? Or maybe not
     def plot_data(self, ax, x, y, *, mask=None, colour=None, **kwargs):
+        # matplotlib is the `plots` extra, and demeteor now depends on this package: an
+        # import at module scope would put a plotting library -- and the backend switching
+        # below -- on the import path of a headless server. Only the plot methods need it.
+        import matplotlib as mpl
+
         u, v = self(x, y)
 
         if mask is not None:
@@ -253,6 +261,11 @@ class SampledVectorField():
         return SampledVectorField(x, y, u, v)
 
     def plot(self, color='black'):
+        # matplotlib is the `plots` extra, and demeteor now depends on this package: an
+        # import at module scope would put a plotting library -- and the backend switching
+        # below -- on the import path of a headless server. Only the plot methods need it.
+        from matplotlib import pyplot as plt
+
         plt.quiver(self.x, self.y, self.u, self.v, width=2e-3, color=color)
         plt.gca().set_aspect('equal')
         plt.get_current_fig_manager().window.attributes('-fullscreen', True)
