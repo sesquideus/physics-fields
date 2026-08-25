@@ -101,6 +101,7 @@ class TestZernikeVector():
         v1 = ZernikeVector(5, 5)
         assert self.eval(v1, v1, unit_square) == pytest.approx(1, abs=0.005)
 
-    def test_norm_4(self, unit_square):
+    def test_norm_4(self, fine_unit_square):
+        """ Order 23, so on the fine grid -- see the fixture for why, and for the numbers. """
         v1 = ZernikeVector(23, 17, False)
-        assert self.eval(v1, v1, unit_square) == pytest.approx(1, abs=0.005)
+        assert self.eval(v1, v1, fine_unit_square) == pytest.approx(1, abs=0.005)

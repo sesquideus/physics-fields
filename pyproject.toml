@@ -20,8 +20,13 @@ matplotlib = { version = "*", optional = true }
 [tool.poetry.extras]
 plots = ["matplotlib"]
 
+# What the tests need, and nothing else: not one of them imports matplotlib, so `--only main,test`
+# runs the suite without spending minutes on a plotting library and the image library under it.
+[tool.poetry.group.test.dependencies]
+pytest = "^9.0.3"
+
+# What a person wants, to call the plot methods by hand.
 [tool.poetry.group.dev.dependencies]
-pytest = "^7.4.3"
 matplotlib = "*"
 
 [build-system]

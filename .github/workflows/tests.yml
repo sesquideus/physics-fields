@@ -1,0 +1,46 @@
+# A library, so it is installed and tested the way anything that depends on it will get it: from
+# this source tree against current releases of its dependencies, not against the lockfile.
+#
+# Only the `test` group, not `dev`: no test here imports matplotlib, and installing it costs minutes
+# on a Python this new. The plot methods import it themselves and are exercised by hand.
+name: tests
+
+on:
+  push:
+    branches: ["master"]
+  pull_request:
+    branches: ["master"]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          # The floor in pyproject.toml, and what demeteor and the AMOS server both run.
+          python-version: "3.14"
+          cache: pip
+
+      # Editable, so that pytest imports the source tree rather than a built copy of it while pip
+      # resolves the dependencies. pytest is in the `test` group, which pip cannot read out of a
+      # poetry project, so it is named here.
+      - name: Install the project
+        run: pip install -e . pytest
+
+      - name: Lint for the errors that are errors
+        run: pipx run ruff check --select=E9,F63,F7,F82 .
+
+      # Advisory: no ruff configuration here says which of its default opinions this tree shares,
+      # so the findings annotate the diff instead of failing the build.
+      - name: Lint for everything else, without failing
+        run: pipx run ruff check --output-format=github --exit-zero .
+
+      # The Zernike tests are three thousand of these and take about a minute and a half.
+      - name: Test
+        run: pytest -q
